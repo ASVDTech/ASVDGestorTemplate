@@ -15,16 +15,16 @@ uses
 type
   TGerenciadorTemplate = class(TInterfacedObject, IGerenciadorTemplate)
   strict private
-    FDicionarioProc: TDictionary<string, TProc>;
+    FDicionarioProc: TDictionary<string, TProc<TUniStrings>>;
     FDiretorioTemplate: string;
     procedure ValidarCamposGerenciador(const pNomeTemplate: string; const pDiretorioTemplate: string);
   strict protected
     function GetDiretorioTemplate: string;
     procedure SetDiretorioTemplate(const pValor: string);
 
-    procedure InterpretarMetodos(const pNomeEvento: string);
+    procedure InterpretarMetodos(const pNomeEvento: string; const pParams: TUniStrings);
     procedure RegistrarTemplate(const pNomeTemplate: string; const pForm: TUniForm);
-    procedure RegistrarCallBack(const pNomeCallback: string; const pMetodo: TProc);
+    procedure RegistrarCallBack(const pNomeCallback: string; const pMetodo: TProc<TUniStrings>);
   public
     constructor Create;
     destructor Destroy; override;
@@ -45,7 +45,7 @@ uses
 constructor TGerenciadorTemplate.Create;
 begin
   inherited;
-  FDicionarioProc := TDictionary<string, TProc>.Create;
+  FDicionarioProc := TDictionary<string, TProc<TUniStrings>>.Create;
 end;
 
 destructor TGerenciadorTemplate.Destroy;
@@ -59,18 +59,17 @@ begin
   Result := FDiretorioTemplate;
 end;
 
-procedure TGerenciadorTemplate.InterpretarMetodos(const pNomeEvento: string);
+procedure TGerenciadorTemplate.InterpretarMetodos(const pNomeEvento: string; const pParams: TUniStrings);
 var
-  lProcedure: TProc;
-  lI: Integer;
+  lProcedure: TProc<TUniStrings>;
 begin
   if FDicionarioProc.TryGetValue(pNomeEvento, lProcedure) then
   begin
-    lProcedure;
+    lProcedure(pParams);
   end;
 end;
 
-procedure TGerenciadorTemplate.RegistrarCallBack(const pNomeCallback: string; const pMetodo: TProc);
+procedure TGerenciadorTemplate.RegistrarCallBack(const pNomeCallback: string; const pMetodo: TProc<TUniStrings>);
 begin
   FDicionarioProc.Add(pNomeCallback, pMetodo);
 end;

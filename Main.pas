@@ -13,7 +13,7 @@ type
     procedure UniFormAjaxEvent(Sender: TComponent; EventName: string; Params: TUniStrings);
   private
     { Private declarations }
-    procedure OnShowMessage;
+    procedure OnShowMessage(Params: TUniStrings);
   public
     { Public declarations }
   end;
@@ -35,7 +35,7 @@ begin
   Result := TMainForm(UniMainModule.GetFormInstance(TMainForm));
 end;
 
-procedure TMainForm.OnShowMessage;
+procedure TMainForm.OnShowMessage(Params: TUniStrings);
 begin
   ShowMessage('Teste');
 end;
