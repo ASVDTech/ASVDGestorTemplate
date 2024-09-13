@@ -5,7 +5,7 @@ object UniServerModule: TUniServerModule
   SuppressErrors = []
   Bindings = <>
   CustomFiles.Strings = (
-    '.\Template\TemplateUniGui\assets\css')
+    '/Template/TemplateUniGUI/assets/js/index.js')
   SSL.SSLOptions.RootCertFile = 'root.pem'
   SSL.SSLOptions.CertFile = 'cert.pem'
   SSL.SSLOptions.KeyFile = 'key.pem'

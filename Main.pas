@@ -10,7 +10,6 @@ uses
 type
   TMainForm = class(TUniForm)
     procedure UniFormCreate(Sender: TObject);
-    procedure UniFormAjaxEvent(Sender: TComponent; EventName: string; Params: TUniStrings);
   private
     { Private declarations }
     procedure OnShowMessage(Params: TUniStrings);
@@ -37,18 +36,13 @@ end;
 
 procedure TMainForm.OnShowMessage(Params: TUniStrings);
 begin
-  ShowMessage('Teste');
-end;
-
-procedure TMainForm.UniFormAjaxEvent(Sender: TComponent; EventName: string; Params: TUniStrings);
-begin
-  UniServerModule.FGerenciadorTemplate.InterpretarMetodos(EventName, Params);
+  ShowMessage('Seu Email: ' + Params['email'].AsString + 'Sua Senha: ' + Params['senha'].AsString);
 end;
 
 procedure TMainForm.UniFormCreate(Sender: TObject);
 begin
-  UniServerModule.FGerenciadorTemplate.RegistrarTemplate('index.html', Self);
-  UniServerModule.FGerenciadorTemplate.RegistrarCallBack('move', OnShowMessage);
+  UniServerModule.FGerenciadorTemplate.RegistrarTemplate('index.html', Self, 'Principal');
+  UniServerModule.FGerenciadorTemplate.RegistrarCallBack('signin', OnShowMessage);
 end;
 
 initialization

@@ -18,7 +18,7 @@ type
     procedure SetDiretorioTemplate(const pValor: string);
 
     procedure InterpretarMetodos(const pNomeEvento: string; const pParams: TUniStrings);
-    procedure RegistrarTemplate(const pNomeTemplate: string; const pForm: TUniForm);
+    procedure RegistrarTemplate(const pNomeTemplate: string; const pForm: TUniForm; const pNameTemplate: string);
     procedure RegistrarCallBack(const pNomeCallback: string; const pMetodo: TProc<TUniStrings>);
 
     property DiretorioTemplate: string read GetDiretorioTemplate write SetDiretorioTemplate;

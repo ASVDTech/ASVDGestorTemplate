@@ -18,12 +18,14 @@ type
     FDicionarioProc: TDictionary<string, TProc<TUniStrings>>;
     FDiretorioTemplate: string;
     procedure ValidarCamposGerenciador(const pNomeTemplate: string; const pDiretorioTemplate: string);
+    procedure PreencherPlaceHolders(const pJSName: string; const pArquivo: string);
+    procedure OnAjaxEvent(Sender: TComponent; EventName: string; Params: TUniStrings);
   strict protected
     function GetDiretorioTemplate: string;
     procedure SetDiretorioTemplate(const pValor: string);
 
     procedure InterpretarMetodos(const pNomeEvento: string; const pParams: TUniStrings);
-    procedure RegistrarTemplate(const pNomeTemplate: string; const pForm: TUniForm);
+    procedure RegistrarTemplate(const pNomeTemplate: string; const pForm: TUniForm; const pNameTemplate: string);
     procedure RegistrarCallBack(const pNomeCallback: string; const pMetodo: TProc<TUniStrings>);
   public
     constructor Create;
@@ -69,12 +71,31 @@ begin
   end;
 end;
 
+procedure TGerenciadorTemplate.OnAjaxEvent(Sender: TComponent; EventName: string; Params: TUniStrings);
+begin
+  InterpretarMetodos(EventName, Params);
+end;
+
+procedure TGerenciadorTemplate.PreencherPlaceHolders(const pJSName, pArquivo: string);
+var
+  lConteudo: TStringList;
+begin
+  lConteudo := TStringList.Create;
+  try
+    lConteudo.LoadFromFile(pArquivo);
+    lConteudo.Text := StringReplace(lConteudo.Text, '<#JSNAME>', pJSName, [rfReplaceAll]);
+    lConteudo.SaveToFile(pArquivo);
+  finally
+    lConteudo.Free;
+  end;
+end;
+
 procedure TGerenciadorTemplate.RegistrarCallBack(const pNomeCallback: string; const pMetodo: TProc<TUniStrings>);
 begin
   FDicionarioProc.Add(pNomeCallback, pMetodo);
 end;
 
-procedure TGerenciadorTemplate.RegistrarTemplate(const pNomeTemplate: string; const pForm: TUniForm);
+procedure TGerenciadorTemplate.RegistrarTemplate(const pNomeTemplate: string; const pForm: TUniForm; const pNameTemplate: string);
 var
   lI: Integer;
   lHTMLFrame: TUniURLFrame;
@@ -92,12 +113,16 @@ begin
 
   if Assigned(lHTMLFrame) then
   begin
+    PreencherPlaceHolders(lHTMLFrame.JSName, FDiretorioTemplate + pNomeTemplate);
+    lHTMLFrame.OnAjaxEvent := OnAjaxEvent;
     lHTMLFrame.URL := FDiretorioTemplate + pNomeTemplate;
   end else
   begin
     lHTMLFrame := TUniURLFrame.Create(pForm);
     lHTMLFrame.Parent := pForm;
     lHTMLFrame.Align := alClient;
+    lHTMLFrame.OnAjaxEvent := OnAjaxEvent;
+    PreencherPlaceHolders(lHTMLFrame.JSName, FDiretorioTemplate + pNomeTemplate);
     lHTMLFrame.URL := FDiretorioTemplate + pNomeTemplate;
   end;
 end;

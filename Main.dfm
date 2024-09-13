@@ -8,7 +8,6 @@ object MainForm: TMainForm
   WindowState = wsMaximized
   OldCreateOrder = False
   MonitoredKeys.Keys = <>
-  OnAjaxEvent = UniFormAjaxEvent
   OnCreate = UniFormCreate
   TextHeight = 15
 end
